@@ -685,7 +685,8 @@ document.getElementById("bookingForm").addEventListener("submit", function (e) {
   const updatedBooked = 8 - (maxAllowed - requestedSeats);
 
   // Send PATCH request via your proxy backend
-  fetch("http://localhost:3000/update-seats", {
+  fetch("https://ridelux-proxy-53apv7tcg-fitulus-projects.vercel.app/update-seats", {
+
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
