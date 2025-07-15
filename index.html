@@ -685,15 +685,15 @@
     const updatedBooked = 8 - (maxAllowed - requestedSeats);
 
     // Send PATCH request via your proxy backend
-    fetch("https://ridelux-proxy-695eoax70-fitulus-projects.vercel.app/update-seats", {
+    fetch("https://ridelux-proxy-nsmb5d98w-fitulus-projects.vercel.app/update-seats", {
+  method: "POST",
+  headers: { "Content-Type": "application/json" },
+  body: JSON.stringify({
+    Date: selectedDate,
+    BookedSeats: updatedBooked
+  })
+})
 
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        Date: selectedDate,
-        BookedSeats: updatedBooked
-      })
-    })
     .then(response => {
       console.log("Proxy responded with status:", response.status);
       const formData = new FormData(form);
