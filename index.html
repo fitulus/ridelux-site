@@ -667,67 +667,63 @@
 
 <script>
   // Booking Form Submission via Proxy + SheetDB patch + Confirmation
-document.getElementById("bookingForm").addEventListener("submit", function (e) {
-  e.preventDefault();
+  document.getElementById("bookingForm").addEventListener("submit", function (e) {
+    e.preventDefault();
 
-  const form = e.target;
-  const selectedDate = form.querySelector("#date").value;
-  const requestedSeats = parseInt(form.querySelector("#passengers").value);
-  const maxAllowed = seatAvailability[selectedDate];
+    const form = e.target;
+    const selectedDate = form.querySelector("#date").value;
+    const requestedSeats = parseInt(form.querySelector("#passengers").value);
+    const maxAllowed = seatAvailability[selectedDate];
 
-  // Check if seat request exceeds available seats
-  if (requestedSeats > maxAllowed) {
-    alert(`Only ${maxAllowed} seats are available on ${selectedDate}`);
-    return;
-  }
-
-  // Calculate new booking number
-  const updatedBooked = 8 - (maxAllowed - requestedSeats);
-
-  // Send PATCH request via your proxy backend
-  fetch("https://ridelux-proxy-5pg8xoufc-fitulus-projects.vercel.app/update-seats", {
-
-
-
-
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      Date: selectedDate,
-      BookedSeats: updatedBooked
-    })
-  })
-  .then(response => {
-    if (!response.ok) {
-      throw new Error("Failed to update seat count");
+    // Check if seat request exceeds available seats
+    if (requestedSeats > maxAllowed) {
+      alert(`Only ${maxAllowed} seats are available on ${selectedDate}`);
+      return;
     }
 
-    // 📨 Submit booking form to Formspree for email confirmation
-    const formData = new FormData(form);
-    return fetch("https://formspree.io/f/mrblzpow", {
+    // Calculate new booking number
+    const updatedBooked = 8 - (maxAllowed - requestedSeats);
+
+    // Send PATCH request via your proxy backend
+    fetch("https://ridelux-proxy-695eoax70-fitulus-projects.vercel.app/update-seats", {
+
       method: "POST",
-      body: formData,
-      headers: { Accept: "application/json" }
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        Date: selectedDate,
+        BookedSeats: updatedBooked
+      })
+    })
+    .then(response => {
+      console.log("Proxy responded with status:", response.status);
+      const formData = new FormData(form);
+      return fetch("https://formspree.io/f/mrblzpow", {
+        method: "POST",
+        body: formData,
+        headers: { Accept: "application/json" }
+      });
+    })
+    .then(response => {
+      console.log("Formspree responded with status:", response.status);
+      if (!response.ok) {
+        throw new Error("Formspree submission failed");
+      }
+
+      // 🎉 Success — show confirmation and reset form
+      document.getElementById("confirmationMsg").style.display = "block";
+      form.reset();
+      document.getElementById("booking").style.display = "none";
+
+      // 🔄 Refresh dropdown with new seat availability
+      loadAvailableDates();
+    })
+    .catch((error) => {
+      console.error(error);
+      alert("Something went wrong while submitting your booking.");
     });
-  })
-  .then(response => {
-    if (!response.ok) {
-      throw new Error("Formspree submission failed");
-    }
-
-    // 🎉 Success — show confirmation and reset form
-    document.getElementById("confirmationMsg").style.display = "block";
-    form.reset();
-    document.getElementById("booking").style.display = "none";
-
-    // 🔄 Refresh dropdown with new seat availability
-    loadAvailableDates();
-  })
-  .catch((error) => {
-    console.error(error);
-    alert("Something went wrong while submitting your booking.");
   });
-});
+</script>
+
 
 
 
