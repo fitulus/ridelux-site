@@ -709,19 +709,20 @@
         throw new Error("Formspree submission failed");
       }
 
-      // 🎉 Success — show confirmation and reset form
-      document.getElementById("confirmationMsg").style.display = "block";
-      form.reset();
-      document.getElementById("booking").style.display = "none";
+          // 🎉 Success — show confirmation and reset form
+    document.getElementById("confirmationMsg").style.display = "block";
+    form.reset();
+    document.getElementById("booking").style.display = "none";
 
-      // 🔄 Refresh dropdown with new seat availability
-      loadAvailableDates();
-    })
-    .catch((error) => {
-      console.error(error);
-      alert("Something went wrong while submitting your booking.");
-    });
+    // 🔄 Refresh dropdown with new seat availability
+    loadAvailableDates();
+  })
+  .catch((error) => {
+    console.error(error);
+    alert("Something went wrong while submitting your booking.");
   });
+});
+
 </script>
 
 
